@@ -9,19 +9,28 @@ export class AppService {
     return 'Hello World!';
   }
 
-  // test user 생성
   async createTestUser() {
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
-        email: `test${Date.now()}@exmaple.com`,
+        email: `test${Date.now()}@example.com`,
         name: 'Suyeon',
       },
     });
+
+    return {
+      ...user,
+      id: user.id.toString(),
+    };
   }
 
-  async getUser() {
-    return this.prisma.user.findMany({
-      orderBy: {id: 'desc'},
+  async getUsers() {
+    const users = await this.prisma.user.findMany({
+      orderBy: { id: 'desc' },
     });
+
+    return users.map((user) => ({
+      ...user,
+      id: user.id.toString(),
+    }));
   }
 }

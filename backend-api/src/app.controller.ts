@@ -16,7 +16,7 @@ export class AppController {
   }
 
   @Get('users')
-  getUser() {
-    return this.appService.getUser();
+  getUsers() {
+    return this.appService.getUsers();
   }
 }
