@@ -15,4 +15,23 @@ export class EventController {
     findAll() {
         return this.eventService.findAll();
     }
+
+    // Analyrics API
+    // 이벤트타입별 집계를 출력
+    @Get('stats/by-type')
+    getStatsByType(){
+        return this.eventService.getStatsByType();
+    }
+
+    // 프로젝트별 이벤트 수를 집계
+    @Get('stats/by-project')
+    getStatsByProjects(){
+        return this.eventService.getStatsByProjects();
+    }
+
+    // 날짜별 이벤트 수 집계
+    @Get('stats/daily')
+    getStatsByDaily(){
+        return '';
+    }
 }
