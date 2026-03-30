@@ -81,6 +81,10 @@ export class EventService {
            }
         });
 
+        stats.forEach((item) => {
+           console.log(item)
+        });
+
         return stats.map((item) => ({
             eventType: item.eventType,
             count: item._count.eventType
@@ -128,10 +132,78 @@ export class EventService {
     }
 
     // 날짜별 이벤트 수 집계
-    /*async getDailyStats(){
+    async getStatsByDaily(){
         // 날짜가 같고 시간대가 다르면 같은 datetime으로 인식하므로 날짜만 잘라서 사용하기 위해 rawSQL방식으로 가져온다
         const stats = await this.prisma.$queryRaw<
             Array< {date: Date; count: bigint} >
-        >'';
-    }*/
+        > `
+            SELECT DATE(occurred_at) AS date, COUNT(*) AS count
+            FROM events
+            GROUP BY DATE(occurred_at)
+            ORDER BY DATE(occurred_at) ASC
+        `;
+
+        return stats.map((item) => ({
+            date: String(item.date),
+            count: Number(item.count)
+        }));
+    }
+
+    // 채널별 이벤트수 집계
+    async getStatsByChannel(){
+
+        const stats = await this.prisma.event.groupBy({
+           by: ['channelAccountId'],
+           _count: {
+               channelAccountId: true
+           },
+           orderBy: {
+               _count: {
+                   channelAccountId: 'desc'
+               }
+           }
+        });
+
+
+        // null아닌 channelAccountId만 추출
+        const channelAccountIds = stats.map((item) => item.channelAccountId).filter((id): id is bigint => id !== null);
+
+        const channelAccounts = await this.prisma.channelAccount.findMany({
+            where : {
+                id : {
+                    in : channelAccountIds
+                }
+            },
+            select:{
+                id : true,
+                channelType: true,
+                accountName: true,
+                projectId: true,
+            }
+        });
+
+        const channelAccountMap = new Map (
+            channelAccounts.map((channel) => [
+                channel.id.toString(),
+                {
+                    channelType: channel.channelType,
+                    accountName: channel.accountName,
+                    projectId : channel.projectId.toString()
+                }
+            ])
+        )
+
+
+        return stats.filter((item): item is typeof item & {channelAccountId: bigint} => item.channelAccountId !== null).map((item) => {
+            const channel = channelAccountMap.get(item.channelAccountId.toString());
+
+            return {
+                channelAccountId: item.channelAccountId.toString(),
+                channelType: channel?.channelType ?? null,
+                accountName: channel?.accountName ?? null,
+                projectId: channel?.projectId ?? null,
+                count: item._count.channelAccountId,
+            };
+        });
+    }
 }

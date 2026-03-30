@@ -30,8 +30,15 @@ export class EventController {
     }
 
     // 날짜별 이벤트 수 집계
-    @Get('stats/daily')
+    @Get('stats/by-daily')
     getStatsByDaily(){
-        return '';
+        return this.eventService.getStatsByDaily();
     }
+
+    // 광고채널별 이벤트 수 집계
+    @Get('stats/by-channel')
+    getStateByChannel(){
+        return this.eventService.getStatsByChannel();
+    }
+
 }
