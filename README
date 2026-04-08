@@ -1,0 +1,29 @@
+# Ad Analytics SaaS Dashboard
+
+광고 이벤트 데이터를 프로젝트 / 채널 / 이벤트 유형별로 집계해  
+대시보드에서 바로 활용할 수 있는 통계 API를 구현한 백엔드 포트폴리오입니다.
+
+[Tech Stack]
+Node.js · TypeScript · NestJS · Prisma · MySQL
+
+# 핵심 구현
+- 프로젝트별 이벤트 수 집계 API 구현
+- 채널별 이벤트 수 집계 API 구현
+- 이벤트 유형별 통계 API 구현
+- 차트 시각화를 고려한 계층형 응답 구조 설계
+- Prisma 기반 데이터 모델링 및 조회 로직 구현
+
+# 해당 프로젝트 구현 이유
+Java/Spring 기반의 공공·업무 시스템 백엔드 경험을  
+제품형 SaaS 백엔드 역량으로 확장하기 위해 진행한 개인 프로젝트입니다.  
+단순 CRUD보다 통계 집계, 대시보드 연동, 데이터 구조 설계에 집중했습니다.
+
+# API 호출 예시
+- `GET /stats/by-project`
+- `GET /stats/by-channel`
+- `GET /stats/by-type`
+
+# 주요 구현 포인트
+- 프론트 차트에서 바로 사용할 수 있는 응답 구조 설계
+- 프로젝트 > 채널 단위로 읽기 쉬운 데이터 그룹화
+- 실무형 관점의 통계 API 설계
