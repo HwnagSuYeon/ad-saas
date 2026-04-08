@@ -14,6 +14,7 @@ export interface ChannelStat{
     channelType: string | null;
     accountName: string | null;
     projectId: string | null;
+    projectName: string | null;
     count: number;
 }
 

@@ -179,7 +179,7 @@ export class EventService {
                 id: true,
                 channelType: true,
                 accountName: true,
-                projectId: true,
+                projectId: true
             }
         });
 
@@ -189,11 +189,29 @@ export class EventService {
                 {
                     channelType: channel.channelType,
                     accountName: channel.accountName,
-                    projectId: channel.projectId.toString()
+                    projectId: channel.projectId
                 }
             ])
         )
 
+        // projectId 목록 추출
+        const projectIds = [...channelAccountMap.values()].map((item) => item.projectId);
+
+        const projects = await this.prisma.project.findMany(({
+            where : {
+                id: {
+                   in: projectIds,
+                }
+            },
+            select : {
+                id: true,
+                name: true
+            }
+        }));
+
+        const projectNameMap = new Map(
+            projects.map((project) => [project.id.toString(), project.name])
+        );
 
         return stats.filter((item): item is typeof item & {
             channelAccountId: bigint
@@ -204,8 +222,9 @@ export class EventService {
                 channelAccountId: item.channelAccountId.toString(),
                 channelType: channel?.channelType ?? null,
                 accountName: channel?.accountName ?? null,
-                projectId: channel?.projectId ?? null,
-                count: item._count.channelAccountId,
+                projectId: channel?.projectId ? channel.projectId.toString() : null,
+                projectName: channel ? projectNameMap.get(channel.projectId.toString()) ?? null : null,
+                count: item._count.channelAccountId
             };
         });
     }
