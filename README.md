@@ -83,9 +83,8 @@ Prisma migration과 seed 데이터를 함께 구성해
 
 ## 실행 방법
 
-### 1. Backend 실행
-
 ```bash
+### 1. Backend 실행
 cd backend-api
 npm install
 npx prisma generate
